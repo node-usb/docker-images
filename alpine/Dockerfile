@@ -1,6 +1,4 @@
-FROM node:8.16-alpine
-
-RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python git eudev-dev
-
+FROM ghcr.io/prebuild/alpine:1
+USER 0
+RUN apk --no-cache add eudev-dev
 USER node
-WORKDIR /app
