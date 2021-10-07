@@ -39,7 +39,6 @@ jobs:
           context: ${{ matrix.image }}
           tags: |
             ghcr.io/node-usb/${{ matrix.image }}:latest
-            ghcr.io/node-usb/${{ matrix.image }}:1
           labels: |
             org.opencontainers.image.version=1.0.0
             org.opencontainers.image.source=${{ github.event.repository.html_url }}
