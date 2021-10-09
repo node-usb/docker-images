@@ -1,31 +1,22 @@
-FROM dockcross/linux-x86
+FROM dockcross/manylinux2014-x86
+ARG NODE=14.18.0
 
-RUN cd ${CROSS_ROOT}/bin && \
-  ln -s /usr/bin/x86_64-linux-gnu-strip
+RUN yum -y install libudev-devel
 
-RUN apt-get -y update && \
-  apt-get -y --no-install-recommends install libudev-dev:i386
-  
-RUN apt-get -y update && \
-  apt-get -y --no-install-recommends install git curl gnupg apt-transport-https && \
-  echo Package: nodejs >> /etc/apt/preferences.d/preferences && \
-  echo Pin: origin deb.nodesource.com >> /etc/apt/preferences.d/preferences && \
-  echo Pin-Priority: 1000 >> /etc/apt/preferences.d/preferences && \
-  curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-  apt-get -y install nodejs && \
-  npm -v && \
-  test -f ${CROSS_ROOT}/bin/x86_64-linux-gnu-strip && \
-  rm -rf /var/lib/apt/lists/*
+RUN curl -s https://nodejs.org/dist/v$NODE/node-v$NODE.tar.gz | tar xvz -C /usr/src
 
-RUN groupadd --gid 1000 node && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
+RUN cd /usr/src/node-v$NODE && \
+  ./configure && \
+  make -j4 && \
+  make install
+
+RUN groupadd -g 1000 node && useradd -g 1000 -u 1000 -m node
 USER node
 
-ENV PREBUILD_STRIP_BIN ${CROSS_ROOT}/bin/x86_64-linux-gnu-strip
-ENV PREBUILD_ARCH x86
+ENV PREBUILD_ARCH ia32
 ENV PREBUILD_PLATFORM linux
 
 # TODO: These are for backwards compat. Remove once we have versioning.
-ENV STRIP ${PREBUILD_STRIP_BIN}
 ENV ARCH ${PREBUILD_ARCH}
 ENV TARGET_PLATFORM ${PREBUILD_PLATFORM}
 
