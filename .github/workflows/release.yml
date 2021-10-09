@@ -21,6 +21,7 @@ jobs:
           - android-armv7
           - android-arm64
           - centos7-devtoolset7
+          - linux-x86
           - linux-armv6
           - linux-armv7
           - linux-arm64
