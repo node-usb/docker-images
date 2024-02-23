@@ -1,5 +1,5 @@
 FROM dockcross/manylinux2014-x86
-ARG NODE=14.18.0
+ARG NODE=16.20.2
 
 RUN yum -y install libudev-devel
 
